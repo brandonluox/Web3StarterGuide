@@ -26,6 +26,10 @@ AuroraLedger is a lightweight utility that helps a solo builder script, sample, 
 
 Each payload is serialized into the `records/` folder, named after the request id. This mirrors the way I might track payloads before hitting a real chain, which is important when juggling several small personal experiments.
 
+### Tracking plans
+
+Every sprint entry earns a simple card in `plans/`. This keeps a second log for reminders and helps me critique what I would tackle next before I run any real RPC calls.
+
 ## Roadmap
 
 1. Draft a JSON schema to validate payloads before serialization.
