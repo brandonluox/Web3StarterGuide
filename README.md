@@ -30,6 +30,8 @@ Each payload is serialized into the `records/` folder, named after the request i
 
 Every sprint entry earns a simple card in `plans/`. This keeps a second log for reminders and helps me critique what I would tackle next before I run any real RPC calls.
 
+Use `python src/auroralogger.py --plan "improve swap story" --urgency medium --tags experiment plan` to log a note and triage it for the next mini-sprint.
+
 ## Roadmap
 
 1. Draft a JSON schema to validate payloads before serialization.

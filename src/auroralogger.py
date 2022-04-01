@@ -9,6 +9,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Iterable, List
 
+from planner import PlanBook
+
 
 @dataclass
 class AuroraLedger:
@@ -82,6 +84,8 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--describe", action="store_true", help="Describe the current build.")
     parser.add_argument("--plan", help="Capture a short plan bullet.")
+    parser.add_argument("--urgency", choices=["low", "medium", "high"], default="low", help="Triage level for the plan.")
+    parser.add_argument("--tags", nargs="+", help="Tags to attach to the plan entry.")
     parser.add_argument("--op", choices=["mint", "swap", "stake"], help="Operation type.")
     parser.add_argument("--target", help="Target account or contract.")
     parser.add_argument("--amount", type=float, default=0.0)
@@ -93,10 +97,13 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     ledger = AuroraLedger()
+    plans = PlanBook()
 
     if args.describe:
         print(ledger.describe())
     if args.plan:
+        entry_path = plans.add_entry(args.plan, urgency=args.urgency, tags=args.tags)
+        print("Plan logged:", entry_path)
         print("Plan saved:", ledger.plan_suggestion([args.plan]))
     if args.hints:
         print("Hint suggestion:", ledger.plan_suggestion(args.hints))
