@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Dict, Any, Iterable, List
 
 from planner import PlanBook
+from payload_validator import validate_payload
 
 
 @dataclass
@@ -61,6 +62,7 @@ class AuroraLedger:
 
     def dump_record(self, payload: Dict[str, Any], plan: str | None = None) -> Path:
         """Persist payload details to the record folder."""
+        validate_payload(payload)
         record_path = self.ensure_record_dir() / f"{payload['id']}.json"
         payload_record = {
             "payload": payload,
