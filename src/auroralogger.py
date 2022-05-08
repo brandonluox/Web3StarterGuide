@@ -27,6 +27,11 @@ class AuroraLedger:
         self.record_dir.mkdir(exist_ok=True)
         return self.record_dir
 
+    def list_records(self) -> List[Path]:
+        """Return the saved record files, sorted by name."""
+        self.ensure_record_dir()
+        return sorted(self.record_dir.glob("*.json"))
+
     def describe(self) -> str:
         """Return a short description of the current configuration."""
         return (
@@ -88,6 +93,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--plan", help="Capture a short plan bullet.")
     parser.add_argument("--urgency", choices=["low", "medium", "high"], default="low", help="Triage level for the plan.")
     parser.add_argument("--tags", nargs="+", help="Tags to attach to the plan entry.")
+    parser.add_argument("--list-records", action="store_true", help="List recorded payloads.")
     parser.add_argument("--op", choices=["mint", "swap", "stake"], help="Operation type.")
     parser.add_argument("--target", help="Target account or contract.")
     parser.add_argument("--amount", type=float, default=0.0)
@@ -107,6 +113,14 @@ def main() -> None:
         entry_path = plans.add_entry(args.plan, urgency=args.urgency, tags=args.tags)
         print("Plan logged:", entry_path)
         print("Plan saved:", ledger.plan_suggestion([args.plan]))
+    if args.list_records:
+        saved = ledger.list_records()
+        if not saved:
+            print("No payloads recorded yet.")
+        else:
+            print("Saved payloads:")
+            for record in saved:
+                print("-", record.name)
     if args.hints:
         print("Hint suggestion:", ledger.plan_suggestion(args.hints))
     if args.op and args.target:

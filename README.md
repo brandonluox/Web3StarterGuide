@@ -21,6 +21,7 @@ AuroraLedger is a lightweight utility that helps a solo builder script, sample, 
 2. Run `python src/auroralogger.py --help` to see the CLI.
 3. Use `python src/auroralogger.py --plan "add a new swap route"` to capture next steps.
 4. Generate a placeholder payload with `python src/auroralogger.py --op mint --target 0xabc123 --amount 12.5 --note "initial seed"`.
+5. Review what you already captured with `python src/auroralogger.py --list-records`.
 
 ### Persisting records
 
