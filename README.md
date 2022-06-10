@@ -14,6 +14,7 @@ AuroraLedger is a lightweight utility that helps a solo builder script, sample, 
 - `README.md` — this guide.
 - `.gitignore` — ignores build artifacts and keeps the instructions file safe.
 - `src/auroralogger.py` — the current utility that builds payloads and writes mock records.
+- `data/networks.json` — snapshots of the RPC endpoints I bounce between when sketching flows.
 
 ## Getting started
 

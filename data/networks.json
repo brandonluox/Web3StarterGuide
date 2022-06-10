@@ -1,0 +1,19 @@
+{
+  "rpc_profiles": {
+    "testnet": {
+      "rpc": "https://rpc.testnet.zetainfra.example",
+      "explorer": "https://scan.testnet.zetaworld.example",
+      "description": "The main sandbox for AuroraLedger experiments."
+    },
+    "local-playground": {
+      "rpc": "http://127.0.0.1:8545",
+      "explorer": "http://localhost:8000",
+      "description": "Private Ganache-style node for prototyping."
+    },
+    "partner-chain": {
+      "rpc": "https://rpc.partnerz.org",
+      "explorer": "https://explorer.partnerz.org",
+      "description": "A friendly L2 network I pull data from for comparison."
+    }
+  }
+}
