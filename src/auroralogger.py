@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, Iterable, List
 
+from network_catalog import NetworkCatalog
 from planner import PlanBook
 from payload_validator import validate_payload
 
@@ -21,6 +22,7 @@ class AuroraLedger:
     rpc_endpoint: str = "https://rpc.testnet.zetainfra.example"
     record_dir: Path = Path("records")
     preferred_ops: List[str] = field(default_factory=lambda: ["mint", "swap", "stake"])
+    catalog: NetworkCatalog | None = None
 
     def ensure_record_dir(self) -> Path:
         """Ensure the records folder exists and return its path."""
@@ -38,6 +40,13 @@ class AuroraLedger:
             f"AuroraLedger on {self.network} using {self.rpc_endpoint} "
             f"tracking ops {', '.join(self.preferred_ops)}."
         )
+
+    def __post_init__(self) -> None:
+        if self.catalog:
+            entry = self.catalog.profile(self.network)
+            if entry:
+                self.rpc_endpoint = entry.rpc
+                self.network = entry.name
 
     def create_payload(
         self,
@@ -94,6 +103,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--urgency", choices=["low", "medium", "high"], default="low", help="Triage level for the plan.")
     parser.add_argument("--tags", nargs="+", help="Tags to attach to the plan entry.")
     parser.add_argument("--list-records", action="store_true", help="List recorded payloads.")
+    parser.add_argument("--network", default="testnet", help="Select the named RPC profile.")
+    parser.add_argument("--list-networks", action="store_true", help="List configured RPC profiles.")
     parser.add_argument("--op", choices=["mint", "swap", "stake"], help="Operation type.")
     parser.add_argument("--target", help="Target account or contract.")
     parser.add_argument("--amount", type=float, default=0.0)
@@ -104,8 +115,18 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    ledger = AuroraLedger()
+    catalog = NetworkCatalog()
+    ledger = AuroraLedger(network=args.network, catalog=catalog)
     plans = PlanBook()
+
+    if args.list_networks:
+        profiles = catalog.list_profiles()
+        if not profiles:
+            print("No network profiles found.")
+        else:
+            print("Available profiles:")
+            for profile in profiles:
+                print(f"- {profile.name}: {profile.description} ({profile.rpc})")
 
     if args.describe:
         print(ledger.describe())

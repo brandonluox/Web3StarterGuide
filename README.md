@@ -34,6 +34,10 @@ Every sprint entry earns a simple card in `plans/`. This keeps a second log for 
 
 Use `python src/auroralogger.py --plan "improve swap story" --urgency medium --tags experiment plan` to log a note and triage it for the next mini-sprint.
 
+### RPC profiles
+
+AuroraLedger loads whatever RPC profiles you define under `data/networks.json`. Run `python src/auroralogger.py --list-networks` to compare what is available, and use `--network partner-chain` (replacing with any profile name) to adopt the corresponding RPC/Explorer pair in your payloads.
+
 ## Roadmap
 
 1. Draft a JSON schema to validate payloads before serialization.
