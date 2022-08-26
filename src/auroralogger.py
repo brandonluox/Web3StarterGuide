@@ -34,6 +34,27 @@ class AuroraLedger:
         self.ensure_record_dir()
         return sorted(self.record_dir.glob("*.json"))
 
+    def summarize_records(self) -> Dict[str, Any]:
+        """Return a quick count and total of the recorded payloads."""
+        records = self.list_records()
+        op_counts: Dict[str, int] = {}
+        total_amount = 0.0
+        for record in records:
+            try:
+                data = json.loads(record.read_text())
+                payload = data.get("payload", {})
+                op = payload.get("op_type", "unknown")
+                amount = float(payload.get("amount", 0))
+                op_counts[op] = op_counts.get(op, 0) + 1
+                total_amount += amount
+            except (ValueError, FileNotFoundError):
+                continue
+        return {
+            "count": len(records),
+            "total_amount": total_amount,
+            "ops": op_counts,
+        }
+
     def describe(self) -> str:
         """Return a short description of the current configuration."""
         return (
@@ -105,6 +126,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--list-records", action="store_true", help="List recorded payloads.")
     parser.add_argument("--network", default="testnet", help="Select the named RPC profile.")
     parser.add_argument("--list-networks", action="store_true", help="List configured RPC profiles.")
+    parser.add_argument("--summary", action="store_true", help="Show payload summary.")
     parser.add_argument("--op", choices=["mint", "swap", "stake"], help="Operation type.")
     parser.add_argument("--target", help="Target account or contract.")
     parser.add_argument("--amount", type=float, default=0.0)
@@ -142,6 +164,13 @@ def main() -> None:
             print("Saved payloads:")
             for record in saved:
                 print("-", record.name)
+    if args.summary:
+        summary = ledger.summarize_records()
+        print(
+            f"Payload summary: {summary['count']} entries, {summary['total_amount']} total amount."
+        )
+        for op, count in sorted(summary["ops"].items()):
+            print(f"  {op}: {count}")
     if args.hints:
         print("Hint suggestion:", ledger.plan_suggestion(args.hints))
     if args.op and args.target:
