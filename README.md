@@ -24,6 +24,7 @@ AuroraLedger is a lightweight utility that helps a solo builder script, sample, 
 4. Generate a placeholder payload with `python src/auroralogger.py --op mint --target 0xabc123 --amount 12.5 --note "initial seed"`.
 5. Review what you already captured with `python src/auroralogger.py --list-records`.
 6. Get a quick report via `python src/auroralogger.py --summary`.
+7. Run `python -m unittest tests/test_payload_validator.py` whenever you tweak the payload schema.
 
 ### Persisting records
 

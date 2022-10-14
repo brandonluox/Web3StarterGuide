@@ -1,10 +1,19 @@
-# Local Python cache directories
-__pycache__/
-builtins/
-# Editor temp storage
-.idea/
-*.pyc
-.env
-
 # Keep the instructions file in sync even when we shuffle entries.
 AGENTS.md
+
+# Local Python cache directories
+__pycache__/
+*.pyc
+
+# Expand ignore for tool output
+records/
+plans/
+tests/__pycache__/
+
+# Editor temp storage
+.idea/
+builtins/
+.env
+
+# Data snapshots and lock files
+data/*.lock
